@@ -13,22 +13,22 @@ import {
 const menuitems = [
   {
     title: "Store",
-    url: "#",
+    url: "/stores",
     icon: HomeIcon,
   },
   {
     title: "SKU",
-    url: "#",
+    url: "/skus",
     icon: TokensIcon,
   },
   {
     title: "Planning",
-    url: "#",
+    url: "/planning",
     icon: BarChartIcon,
   },
   {
     title: "Chart",
-    url: "#",
+    url: "/charts",
     icon: PieChartIcon,
   },
 ];
@@ -47,8 +47,8 @@ const Layout = ({ children }: { children: ReactNode }) => {
 
           {/* Main Content */}
           <main className="flex-1 w-full p-6 mt-10">
-            {children}
             <SidebarTrigger />
+            {children}
           </main>
         </div>
       </div>
