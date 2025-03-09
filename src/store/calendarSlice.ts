@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface Calendar {
-  seqId: string | number;
-  week: string;
-  weekLabel: string;
-  month: string;
-  monthLabel: string;
+  "Seq No.": string | number;
+  Week: string;
+  "Week Label": string;
+  Month: string;
+  "Month Label": string;
 }
 
 export interface CalendarState {

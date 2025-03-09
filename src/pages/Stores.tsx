@@ -1,20 +1,20 @@
 import { Button } from "@/components/ui/button";
-import { AgGridReact } from "ag-grid-react";
 import { useMemo } from "react";
 
 // ✅ Import AG Grid Modules
+import Grid from "@/components/common/Grid";
 import { RootState } from "@/store/store";
 import { Store } from "@/store/storeSlice";
 import {
-  ClientSideRowModelModule,
-  ColDef,
-  DateFilterModule,
-  ModuleRegistry,
-  NumberFilterModule,
-  RowDragModule,
-  TextEditorModule,
-  TextFilterModule,
-  ValidationModule,
+    ClientSideRowModelModule,
+    ColDef,
+    DateFilterModule,
+    ModuleRegistry,
+    NumberFilterModule,
+    RowDragModule,
+    TextEditorModule,
+    TextFilterModule,
+    ValidationModule,
 } from "ag-grid-community";
 import { useSelector } from "react-redux";
 interface ExtendedColDef<TData = unknown> extends ColDef<TData> {
@@ -57,14 +57,7 @@ const Stores = () => {
         <Button onClick={() => {}}>Add Store</Button>
       </div>
       <div className="ag-theme-alpine w-full h-[500px]">
-        <AgGridReact
-          rowData={store.rows}
-          columnDefs={columns}
-          rowModelType="clientSide"
-          domLayout="normal"
-          animateRows
-          rowDragManaged
-        />
+        <Grid rows={store.rows} columns={columns} />
       </div>
     </div>
   );

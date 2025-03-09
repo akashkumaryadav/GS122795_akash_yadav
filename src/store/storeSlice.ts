@@ -1,11 +1,11 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface Store {
-  seqId: string | number;
-  id: string;
-  label: string;
-  city: string;
-  state: string;
+  "Seq No.": string | number;
+  ID: string;
+  Label: string;
+  City: string;
+  State: string;
 }
 
 export interface StoresState {
@@ -26,11 +26,11 @@ export const storesSlice = createSlice({
       state.rows.push(action.payload);
     },
     deleteStore: (state, action: PayloadAction<string>) => {
-      state.rows = state.rows.filter((store) => store.id !== action.payload);
+      state.rows = state.rows.filter((store) => store.ID !== action.payload);
     },
     updateStore: (state, action: PayloadAction<Store>) => {
       const index = state.rows.findIndex(
-        (store) => store.id === action.payload.id
+        (store) => store.ID === action.payload.ID
       );
       if (index !== -1) {
         state.rows[index] = action.payload;
