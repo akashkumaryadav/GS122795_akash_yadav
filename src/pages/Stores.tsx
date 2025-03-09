@@ -35,7 +35,7 @@ ModuleRegistry.registerModules([
 const Stores = () => {
   const dispatch = useDispatch();
   const store = useSelector((centralStore: RootState) => centralStore.store);
-  const sheet = useSheetData({
+  const sheet = useSheetData<Store>({
     sheetName: "stores",
     fetch: Boolean(store.rows.length),
   });

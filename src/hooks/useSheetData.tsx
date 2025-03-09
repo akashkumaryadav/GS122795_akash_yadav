@@ -1,20 +1,19 @@
 import { loadXLSXFileWithWorker } from "@/service/xlsxService";
-import { Store } from "@/store/storeSlice";
 import { useEffect, useState } from "react";
 
-const useSheetData = ({
+const useSheetData = <T,>({
   sheetName,
   fetch,
 }: {
   sheetName: string;
   fetch: boolean;
 }) => {
-  const [data, setData] = useState<{ data: Store[]; headers: string[] }>();
+  const [data, setData] = useState<{ data: T[]; headers: string[] }>();
   useEffect(() => {
     const fetchData = async () => {
       console.log("loading sheet");
       try {
-        const storesFromXLSX = await loadXLSXFileWithWorker(sheetName);
+        const storesFromXLSX = await loadXLSXFileWithWorker<T>(sheetName);
         setData(storesFromXLSX);
       } catch (error) {
         console.error("Failed to load XLSX:", error);
