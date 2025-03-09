@@ -1,6 +1,6 @@
-import { WorkBook } from "xlsx";
+import { Store } from "@/store/storeSlice";
 
-export const loadXLSXFileWithWorker = (): Promise<WorkBook[]> => {
+export const loadXLSXFileWithWorker = (sheetName: string): Promise<Store[]> => {
   return new Promise((resolve, reject) => {
     // Move async function outside Promise executor
     const fetchAndProcessFile = async () => {
@@ -34,7 +34,7 @@ export const loadXLSXFileWithWorker = (): Promise<WorkBook[]> => {
         };
 
         // Pass the fetched ArrayBuffer to the worker
-        worker.postMessage(arrayBuffer);
+        worker.postMessage({ file: arrayBuffer, sheetName });
       } catch (error) {
         reject("Error loading XLSX file: " + error);
       }

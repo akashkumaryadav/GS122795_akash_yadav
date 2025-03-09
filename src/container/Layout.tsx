@@ -1,16 +1,17 @@
-import { ReactNode } from "react";
 import Navbar from "@/components/layout/Navigation";
 import LeftNavigation from "@/components/layout/Sidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import "../App.css";
+import { loadXLSXFileWithWorker } from "@/service/xlsxService";
 import {
-  HomeIcon,
-  TokensIcon,
   BarChartIcon,
+  HomeIcon,
   PieChartIcon,
+  TokensIcon,
 } from "@radix-ui/react-icons";
-import { Provider } from "react-redux";
-import { store } from "@/store/store";
+import { ReactNode, useEffect } from "react";
+import { useDispatch } from "react-redux";
+import "../App.css";
+import { initStore } from "@/store/storeSlice";
 
 const menuitems = [
   {
@@ -36,27 +37,37 @@ const menuitems = [
 ];
 
 const Layout = ({ children }: { children: ReactNode }) => {
+  const dispatch = useDispatch();
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const storesFromXLSX = await loadXLSXFileWithWorker("stores");
+        dispatch(initStore(storesFromXLSX));
+      } catch (error) {
+        console.error("Failed to load XLSX:", error);
+      }
+    };
+    fetchData();
+  }, []);
   return (
-    <Provider store={store}>
-      <SidebarProvider>
-        <div className="flex w-full h-screen">
-          {/* Sidebar (Left Navigation) */}
-          <LeftNavigation menu={menuitems} />
+    <SidebarProvider>
+      <div className="flex w-full h-screen">
+        {/* Sidebar (Left Navigation) */}
+        <LeftNavigation menu={menuitems} />
 
-          {/* Main Content Area */}
-          <div className="flex-1 flex flex-col w-full">
-            {/* Top Navigation Bar */}
-            <Navbar />
+        {/* Main Content Area */}
+        <div className="flex-1 flex flex-col w-full">
+          {/* Top Navigation Bar */}
+          <Navbar />
 
-            {/* Main Content */}
-            <main className="flex-1 w-full p-6 mt-10">
-              <SidebarTrigger />
-              {children}
-            </main>
-          </div>
+          {/* Main Content */}
+          <main className="flex-1 w-full p-6 mt-10">
+            <SidebarTrigger />
+            {children}
+          </main>
         </div>
-      </SidebarProvider>
-    </Provider>
+      </div>
+    </SidebarProvider>
   );
 };
 

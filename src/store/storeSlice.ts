@@ -13,15 +13,7 @@ export interface StoresState {
 }
 
 const initialState: StoresState = {
-  rows: [
-    {
-      seqId: 0,
-      label: "Bay Trends",
-      city: "phonix",
-      id: "ST035",
-      state: "CA",
-    },
-  ],
+  rows: [],
 };
 
 export const storesSlice = createSlice({
@@ -42,8 +34,12 @@ export const storesSlice = createSlice({
         state.rows[index] = action.payload;
       }
     },
+    initStore: (state, action: PayloadAction<Store[]>) => {
+      state.rows = action.payload;
+    },
   },
 });
 
-export const { addStore, deleteStore, updateStore } = storesSlice.actions;
+export const { addStore, deleteStore, updateStore, initStore } =
+  storesSlice.actions;
 export default storesSlice.reducer;
