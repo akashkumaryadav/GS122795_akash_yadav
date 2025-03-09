@@ -1,0 +1,5 @@
+#  Husky pre-commit hook to run linting before commit
+#  yarn lint will runlinting on all files
+echo "🚀 Husky pre-commit hook started..."
+yarn lint
+echo "🚀 Husky pre-commit hook finished!s"
