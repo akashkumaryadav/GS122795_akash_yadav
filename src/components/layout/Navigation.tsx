@@ -12,6 +12,7 @@ const Navbar = () => {
       {/* Left: Logo */}
       <div className="text-xl font-bold">GSynergy</div>
 
+      <h1>Data Viewer App</h1>
       {/* Right: User Profile Dropdown */}
       <DropdownMenu>
         <DropdownMenuTrigger>
