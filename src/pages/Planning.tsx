@@ -4,6 +4,7 @@ import { CellValueChangedEvent, ColDef, GridOptions } from "ag-grid-community";
 import { useSelector } from "react-redux";
 
 import { ValueGetterParams } from "ag-grid-community";
+import { useMemo } from "react";
 
 interface Params extends ValueGetterParams<{ [key: string]: number }, unknown> {
   value: number;
@@ -45,46 +46,56 @@ const Planning = () => {
   );
 
   // Cross join stores and SKUs to create row data
-  const rowData = store.flatMap((_store) =>
-    skus.map((sku) => {
-      const row: RowData & { [key: string]: string | number } = {
-        // Store fields
-        Store_ID: _store.ID,
-        Store_Label: _store.Label,
-        Store_City: _store.City,
-        Store_State: _store.State,
-        // SKU fields
-        SKU_ID: sku.ID,
-        SKU_Label: sku.Label,
-        SKU_Class: sku.Class,
-        SKU_Department: sku.Department,
-        SKU_Price: sku.Price,
-        SKU_Cost: sku.Cost,
-      };
-      // Initialize Sales Units for each week
-      calendarWeeks.forEach((week) => {
-        row[`${week.Week}_Sales_Units`] = 0;
-      });
-      return row as RowData;
-    })
+  const rowData = useMemo(
+    () =>
+      store.flatMap((_store) =>
+        skus.map((sku) => {
+          const row: RowData & { [key: string]: string | number } = {
+            // Store fields
+            Store_ID: _store.ID,
+            Store_Label: _store.Label,
+            Store_City: _store.City,
+            Store_State: _store.State,
+            // SKU fields
+            SKU_ID: sku.ID,
+            SKU_Label: sku.Label,
+            SKU_Class: sku.Class,
+            SKU_Department: sku.Department,
+            SKU_Price: sku.Price,
+            SKU_Cost: sku.Cost,
+          };
+          // Initialize Sales Units for each week
+          calendarWeeks.forEach((week) => {
+            row[`${week.Week}_Sales_Units`] = 0;
+          });
+          return row as RowData;
+        })
+      ),
+    [store, skus, calendarWeeks]
   );
 
-  const monthGroups = calendarWeeks.reduce(
-    (
-      acc: { [key: string]: { label: string; weeks: typeof calendarWeeks } },
-      week
-    ) => {
-      const monthKey = week.Month;
-      if (!acc[monthKey]) {
-        acc[monthKey] = {
-          label: week["Month Label"],
-          weeks: [],
-        };
-      }
-      acc[monthKey].weeks.push(week);
-      return acc;
-    },
-    {}
+  const monthGroups = useMemo(
+    () =>
+      calendarWeeks.reduce(
+        (
+          acc: {
+            [key: string]: { label: string; weeks: typeof calendarWeeks };
+          },
+          week
+        ) => {
+          const monthKey = week.Month;
+          if (!acc[monthKey]) {
+            acc[monthKey] = {
+              label: week["Month Label"],
+              weeks: [],
+            };
+          }
+          acc[monthKey].weeks.push(week);
+          return acc;
+        },
+        {}
+      ),
+    [calendarWeeks]
   );
 
   const columnDefs: ColumnDef[] = [
@@ -144,13 +155,7 @@ const Planning = () => {
 
             if (sales === 0) return 0;
             const gm = sales - units * (params.data?.SKU_Cost ?? 0);
-            console.log(
-              gm,
-              sales,
-              units,
-              params.data?.SKU_Cost,
-              "skucost"
-            );
+            console.log(gm, sales, units, params.data?.SKU_Cost, "skucost");
             return gm / sales;
           },
           valueFormatter: (params) => `${(params.value * 100).toFixed(1)}%`,
@@ -196,7 +201,6 @@ const Planning = () => {
       }
     },
   };
-  console.log(columnDefs);
   return (
     <>
       <Grid<RowData>
