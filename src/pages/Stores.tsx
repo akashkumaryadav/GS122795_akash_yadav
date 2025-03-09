@@ -18,6 +18,9 @@ import {
   ValidationModule,
 } from "ag-grid-community";
 import { useDispatch, useSelector } from "react-redux";
+interface ExtendedColDef<TData = unknown> extends ColDef<TData> {
+  rowDrag?: boolean;
+}
 // ✅ Register the required modules
 ModuleRegistry.registerModules([
   ClientSideRowModelModule,
@@ -37,12 +40,20 @@ const Stores = () => {
     fetch: Boolean(store.rows.length),
   });
 
-  const columns = useMemo<ColDef<Store>[]>(() => {
-    return store.columns.map((column) => ({
+  const columns = useMemo<ExtendedColDef<Store>[]>(() => {
+    const _col = store.columns.map((column) => ({
       headerName: column,
       field: column as keyof Store,
       sortable: false,
-    }));
+      pinned: column === "City" || column === "State" ? "right" : undefined,
+    })) as ExtendedColDef<Store>[];
+    _col.unshift({
+      headerName: "☰",
+      field: "drag" as keyof Store,
+      rowDrag: true,
+      width: 50,
+    });
+    return _col;
   }, [store.columns]);
 
   useEffect(() => {
@@ -62,8 +73,9 @@ const Stores = () => {
           rowData={store.rows}
           columnDefs={columns}
           rowModelType="clientSide"
-          domLayout="autoHeight"
+          domLayout="normal"
           animateRows
+          rowDragManaged
         />
       </div>
     </div>
