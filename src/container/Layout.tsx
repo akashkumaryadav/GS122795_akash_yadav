@@ -9,6 +9,8 @@ import {
   BarChartIcon,
   PieChartIcon,
 } from "@radix-ui/react-icons";
+import { Provider } from "react-redux";
+import { store } from "@/store/store";
 
 const menuitems = [
   {
@@ -35,24 +37,26 @@ const menuitems = [
 
 const Layout = ({ children }: { children: ReactNode }) => {
   return (
-    <SidebarProvider>
-      <div className="flex w-full h-screen">
-        {/* Sidebar (Left Navigation) */}
-        <LeftNavigation menu={menuitems} />
+    <Provider store={store}>
+      <SidebarProvider>
+        <div className="flex w-full h-screen">
+          {/* Sidebar (Left Navigation) */}
+          <LeftNavigation menu={menuitems} />
 
-        {/* Main Content Area */}
-        <div className="flex-1 flex flex-col w-full">
-          {/* Top Navigation Bar */}
-          <Navbar />
+          {/* Main Content Area */}
+          <div className="flex-1 flex flex-col w-full">
+            {/* Top Navigation Bar */}
+            <Navbar />
 
-          {/* Main Content */}
-          <main className="flex-1 w-full p-6 mt-10">
-            <SidebarTrigger />
-            {children}
-          </main>
+            {/* Main Content */}
+            <main className="flex-1 w-full p-6 mt-10">
+              <SidebarTrigger />
+              {children}
+            </main>
+          </div>
         </div>
-      </div>
-    </SidebarProvider>
+      </SidebarProvider>
+    </Provider>
   );
 };
 
