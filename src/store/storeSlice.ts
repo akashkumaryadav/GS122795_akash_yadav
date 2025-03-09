@@ -10,10 +10,12 @@ export interface Store {
 
 export interface StoresState {
   rows: Store[];
+  columns: string[];
 }
 
 const initialState: StoresState = {
   rows: [],
+  columns: [],
 };
 
 export const storesSlice = createSlice({
@@ -34,8 +36,12 @@ export const storesSlice = createSlice({
         state.rows[index] = action.payload;
       }
     },
-    initStore: (state, action: PayloadAction<Store[]>) => {
-      state.rows = action.payload;
+    initStore: (
+      state,
+      action: PayloadAction<{ rows: Store[]; columns: StoresState["columns"] }>
+    ) => {
+      state.rows = action.payload.rows;
+      state.columns = action.payload.columns;
     },
   },
 });

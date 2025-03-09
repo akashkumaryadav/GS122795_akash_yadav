@@ -1,17 +1,14 @@
 import Navbar from "@/components/layout/Navigation";
 import LeftNavigation from "@/components/layout/Sidebar";
 import { SidebarProvider, SidebarTrigger } from "@/components/ui/sidebar";
-import { loadXLSXFileWithWorker } from "@/service/xlsxService";
 import {
-  BarChartIcon,
-  HomeIcon,
-  PieChartIcon,
-  TokensIcon,
+    BarChartIcon,
+    HomeIcon,
+    PieChartIcon,
+    TokensIcon,
 } from "@radix-ui/react-icons";
-import { ReactNode, useEffect } from "react";
-import { useDispatch } from "react-redux";
+import { ReactNode } from "react";
 import "../App.css";
-import { initStore } from "@/store/storeSlice";
 
 const menuitems = [
   {
@@ -37,18 +34,6 @@ const menuitems = [
 ];
 
 const Layout = ({ children }: { children: ReactNode }) => {
-  const dispatch = useDispatch();
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const storesFromXLSX = await loadXLSXFileWithWorker("stores");
-        dispatch(initStore(storesFromXLSX));
-      } catch (error) {
-        console.error("Failed to load XLSX:", error);
-      }
-    };
-    fetchData();
-  }, []);
   return (
     <SidebarProvider>
       <div className="flex w-full h-screen">

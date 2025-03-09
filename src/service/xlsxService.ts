@@ -1,6 +1,8 @@
 import { Store } from "@/store/storeSlice";
 
-export const loadXLSXFileWithWorker = (sheetName: string): Promise<Store[]> => {
+export const loadXLSXFileWithWorker = (
+  sheetName: string
+): Promise<{ data: Store[]; headers: string[] }> => {
   return new Promise((resolve, reject) => {
     // Move async function outside Promise executor
     const fetchAndProcessFile = async () => {
@@ -23,7 +25,7 @@ export const loadXLSXFileWithWorker = (sheetName: string): Promise<Store[]> => {
           if (event.data.error) {
             reject(event.data.error);
           } else {
-            resolve(event.data.data);
+            resolve({ data: event.data.data, headers: event.data.headers });
           }
           worker.terminate();
         };

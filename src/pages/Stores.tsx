@@ -1,18 +1,23 @@
-import { useState, useCallback } from "react";
-import { AgGridReact } from "ag-grid-react";
 import { Button } from "@/components/ui/button";
+import { AgGridReact } from "ag-grid-react";
+import { useEffect, useMemo } from "react";
 
 // ✅ Import AG Grid Modules
-import { ColDef, ModuleRegistry, RowDragEndEvent } from "ag-grid-community";
+import useSheetData from "@/hooks/useSheetData";
+import { RootState } from "@/store/store";
+import { initStore, Store } from "@/store/storeSlice";
 import {
   ClientSideRowModelModule,
-  ValidationModule,
+  ColDef,
   DateFilterModule,
-  TextFilterModule,
+  ModuleRegistry,
   NumberFilterModule,
-  TextEditorModule,
   RowDragModule,
+  TextEditorModule,
+  TextFilterModule,
+  ValidationModule,
 } from "ag-grid-community";
+import { useDispatch, useSelector } from "react-redux";
 // ✅ Register the required modules
 ModuleRegistry.registerModules([
   ClientSideRowModelModule,
@@ -25,83 +30,40 @@ ModuleRegistry.registerModules([
 ]);
 
 const Stores = () => {
-  const [rowData, setRowData] = useState([
-    { id: 1, name: "Store A", location: "New York", manager: "John Doe" },
-    { id: 2, name: "Store B", location: "Los Angeles", manager: "Jane Smith" },
-    { id: 3, name: "Store C", location: "Chicago", manager: "Mark Brown" },
-  ]);
+  const dispatch = useDispatch();
+  const store = useSelector((centralStore: RootState) => centralStore.store);
+  const sheet = useSheetData({
+    sheetName: "stores",
+    fetch: Boolean(store.rows.length),
+  });
 
-  const [columnDefs] = useState<ColDef<{ id: number; name: string; location: string; manager: string; }>[]>([
-    { headerName: "Store ID", field: "id", sortable: true, filter: true },
-    { headerName: "Store Name", field: "name", editable: true, sortable: true },
-    {
-      headerName: "Location",
-      field: "location",
-      editable: true,
-      sortable: true,
-    },
-    { headerName: "Manager", field: "manager", editable: true, sortable: true },
-    {
-      headerName: "Actions",
-      cellRenderer: (params: { data: { id: number } }) => (
-        <Button
-          variant="destructive"
-          size="sm"
-          onClick={() => handleDelete(params.data.id)}
-        >
-          Delete
-        </Button>
-      ),
-    },
-  ]);
+  const columns = useMemo<ColDef<Store>[]>(() => {
+    return store.columns.map((column) => ({
+      headerName: column,
+      field: column as keyof Store,
+      sortable: false,
+    }));
+  }, [store.columns]);
 
-  const handleDelete = useCallback((id: number) => {
-    setRowData((prevData) => prevData.filter((store) => store.id !== id));
-  }, []);
-
-  const handleAddStore = () => {
-    const newStore = {
-      id: Date.now(),
-      name: "New Store",
-      location: "Unknown",
-      manager: "N/A",
-    };
-    setRowData((prevData) => [...prevData, newStore]);
-  };
-
-  // Handle Row Dragging
-  const onRowDragEnd = (event: RowDragEndEvent<{ id: number; name: string; location: string; manager: string }, void>) => {
-    const movedRow = event.node.data;
-    if (!movedRow) return;
-    const newRowData = [...rowData];
-
-    // Find and remove the dragged row
-    const index = newRowData.findIndex((row) => row.id === movedRow.id);
-    if (index !== -1) {
-      newRowData.splice(index, 1);
+  useEffect(() => {
+    if (sheet.data) {
+      dispatch(initStore({ rows: sheet.data, columns: sheet?.headers || [] }));
     }
-
-    // Insert it at the new position
-    newRowData.splice(event.overIndex, 0, movedRow);
-
-    setRowData(newRowData);
-  };
+  }, [sheet, dispatch]);
 
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-xl font-bold">Stores Management</h2>
-        <Button onClick={handleAddStore}>Add Store</Button>
+        <Button onClick={() => {}}>Add Store</Button>
       </div>
       <div className="ag-theme-alpine w-full h-[500px]">
         <AgGridReact
-          rowData={rowData}
-          columnDefs={columnDefs}
+          rowData={store.rows}
+          columnDefs={columns}
           rowModelType="clientSide"
           domLayout="autoHeight"
           animateRows
-          rowDragManaged
-          onRowDragEnd={onRowDragEnd}
         />
       </div>
     </div>

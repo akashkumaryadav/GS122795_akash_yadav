@@ -3,7 +3,7 @@ import * as XLSX from "xlsx";
 
 self.onmessage = async (event) => {
   try {
-    console.log(event.data)
+    console.log(event.data);
     const arrayBuffer = event.data.file; // We now receive ArrayBuffer directly
     const targetSheet = event.data.sheetName;
     // Read workbook
@@ -18,20 +18,13 @@ self.onmessage = async (event) => {
     }
 
     const sheet = workbook.Sheets[sheetName];
-    const parsedData: Record<string, string>[] =
-      XLSX.utils.sheet_to_json(sheet);
+    const parsedData: Store[] = XLSX.utils.sheet_to_json(sheet);
     // Map data to Store objects
-    const stores: Store[] = parsedData.map((store: Record<string, string>) => {
-      return {
-        seqId: store["Seq No."],
-        city: store["City"],
-        id: store["ID"],
-        label: store["Label"],
-        state: store["State"],
-      };
-    });
-
-    self.postMessage({ data: stores });
+    if (parsedData) {
+      const stores: Store[] = parsedData;
+      const headers = Object.keys(parsedData?.[0]);
+      self.postMessage({ data: stores, headers });
+    }
   } catch (error) {
     self.postMessage({ error: "Error processing XLSX file: " + error });
   }
