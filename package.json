@@ -2,6 +2,10 @@
   "name": "gs122795_akash_yadav",
   "private": true,
   "version": "0.0.0",
+  "author": {
+    "name": "Akash Yadav",
+    "email": "akashkumaryadavcse@gmail.com"
+  },
   "type": "module",
   "scripts": {
     "dev": "vite",
