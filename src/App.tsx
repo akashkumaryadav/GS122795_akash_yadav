@@ -9,8 +9,23 @@ import Stores from "./pages/Stores";
 import SKUs from "./pages/SKU";
 import Planning from "./pages/Planning";
 import Charts from "./pages/Charts";
+import React from "react";
+import { loadXLSXFileWithWorker } from "./service/xlsxService";
 
 function App() {
+  React.useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const storesFromXLSX = await loadXLSXFileWithWorker();
+        console.log(storesFromXLSX);
+      } catch (error) {
+        console.error("Failed to load XLSX:", error);
+      }
+    };
+
+    fetchData();
+  }, []);
+
   return (
     <Router>
       <Layout>

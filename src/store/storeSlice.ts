@@ -1,14 +1,14 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-interface Store {
-  seqId: number;
+export interface Store {
+  seqId: string | number;
   id: string;
   label: string;
   city: string;
   state: string;
 }
 
-interface StoresState {
+export interface StoresState {
   rows: Store[];
 }
 
