@@ -1,34 +1,35 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
-export interface Store {
-  "Seq No.": string | number;
+export interface Sku {
   ID: string;
   Label: string;
-  City: string;
-  State: string;
+  Class: string;
+  Department: string;
+  Price: string;
+  Cost: string;
 }
 
-export interface StoresState {
-  rows: Store[];
+export interface SkuState {
+  rows: Sku[];
   columns: string[];
 }
 
-const initialState: StoresState = {
+const initialState: SkuState = {
   rows: [],
   columns: [],
 };
 
-export const storesSlice = createSlice({
-  name: "store",
+export const skuSlice = createSlice({
+  name: "sku",
   initialState,
   reducers: {
-    addStore: (state, action: PayloadAction<Store>) => {
+    addStore: (state, action: PayloadAction<Sku>) => {
       state.rows.push(action.payload);
     },
     deleteStore: (state, action: PayloadAction<string>) => {
       state.rows = state.rows.filter((store) => store.ID !== action.payload);
     },
-    updateStore: (state, action: PayloadAction<Store>) => {
+    updateStore: (state, action: PayloadAction<Sku>) => {
       const index = state.rows.findIndex(
         (store) => store.ID === action.payload.ID
       );
@@ -38,7 +39,7 @@ export const storesSlice = createSlice({
     },
     initStore: (
       state,
-      action: PayloadAction<{ rows: Store[]; columns: StoresState["columns"] }>
+      action: PayloadAction<{ rows: Sku[]; columns: SkuState["columns"] }>
     ) => {
       state.rows = action.payload.rows;
       state.columns = action.payload.columns;
@@ -47,5 +48,5 @@ export const storesSlice = createSlice({
 });
 
 export const { addStore, deleteStore, updateStore, initStore } =
-  storesSlice.actions;
-export default storesSlice.reducer;
+  skuSlice.actions;
+export default skuSlice.reducer;

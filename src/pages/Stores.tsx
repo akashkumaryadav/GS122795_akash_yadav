@@ -1,23 +1,22 @@
 import { Button } from "@/components/ui/button";
-import { AgGridReact } from "ag-grid-react";
-import { useEffect, useMemo } from "react";
+import { useMemo } from "react";
 
 // ✅ Import AG Grid Modules
-import useSheetData from "@/hooks/useSheetData";
+import Grid from "@/components/common/Grid";
 import { RootState } from "@/store/store";
-import { initStore, Store } from "@/store/storeSlice";
+import { Store } from "@/store/storeSlice";
 import {
-  ClientSideRowModelModule,
-  ColDef,
-  DateFilterModule,
-  ModuleRegistry,
-  NumberFilterModule,
-  RowDragModule,
-  TextEditorModule,
-  TextFilterModule,
-  ValidationModule,
+    ClientSideRowModelModule,
+    ColDef,
+    DateFilterModule,
+    ModuleRegistry,
+    NumberFilterModule,
+    RowDragModule,
+    TextEditorModule,
+    TextFilterModule,
+    ValidationModule,
 } from "ag-grid-community";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 interface ExtendedColDef<TData = unknown> extends ColDef<TData> {
   rowDrag?: boolean;
 }
@@ -33,12 +32,7 @@ ModuleRegistry.registerModules([
 ]);
 
 const Stores = () => {
-  const dispatch = useDispatch();
   const store = useSelector((centralStore: RootState) => centralStore.store);
-  const sheet = useSheetData({
-    sheetName: "stores",
-    fetch: Boolean(store.rows.length),
-  });
 
   const columns = useMemo<ExtendedColDef<Store>[]>(() => {
     const _col = store.columns.map((column) => ({
@@ -56,12 +50,6 @@ const Stores = () => {
     return _col;
   }, [store.columns]);
 
-  useEffect(() => {
-    if (sheet.data) {
-      dispatch(initStore({ rows: sheet.data, columns: sheet?.headers || [] }));
-    }
-  }, [sheet, dispatch]);
-
   return (
     <div className="p-6">
       <div className="flex justify-between items-center mb-4">
@@ -69,14 +57,7 @@ const Stores = () => {
         <Button onClick={() => {}}>Add Store</Button>
       </div>
       <div className="ag-theme-alpine w-full h-[500px]">
-        <AgGridReact
-          rowData={store.rows}
-          columnDefs={columns}
-          rowModelType="clientSide"
-          domLayout="normal"
-          animateRows
-          rowDragManaged
-        />
+        <Grid rows={store.rows} columns={columns} />
       </div>
     </div>
   );

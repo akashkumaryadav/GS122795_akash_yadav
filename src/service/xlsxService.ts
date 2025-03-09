@@ -1,8 +1,6 @@
-import { Store } from "@/store/storeSlice";
-
-export const loadXLSXFileWithWorker = (
+export const loadXLSXFileWithWorker = <T>(
   sheetName: string
-): Promise<{ data: Store[]; headers: string[] }> => {
+): Promise<{ data: T[]; headers: string[] }> => {
   return new Promise((resolve, reject) => {
     // Move async function outside Promise executor
     const fetchAndProcessFile = async () => {
